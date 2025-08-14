@@ -1,23 +1,82 @@
 # config.py
 questions = [
-    "姓名", "性别(1男 2女)", "出生年份", "身份证号", "医保卡号(选填)",
-    "家庭医生", "问卷调查人(楼栋负责人)", "身高(cm)", "体重(kg)",
-    "职业", "文化程度(1小学 2初中 3中专 4高中 5大专 6大学 7硕士 8博士 9博士后)",
-    "家庭地址", "联系电话1(住宅)", "联系电话2(手机)", "联系电话3(家属)",
-    "吸烟史(1是 2否)", "吸烟频率(支/天)", "累计吸烟年数", "目前是否戒烟(1是 2否)", "戒烟年数",
-    "被动吸烟(1否 2是)", "被动吸烟频率(1≤1小时/天 2 1-2小时/天 3>2小时/天)", "累计被动吸烟年数",
-    "长期厨房油烟接触(1每周<1次 2每周1-3次 3每周>3次 4每天)", "累计厨房油烟接触年数",
-    "职业致癌物质接触(1有 2无)", "致癌物类型及累计接触年数(如有)",
-    "既往个人肿瘤史(1有 2无)", "肿瘤类型及确诊年份(如有)",
-    "三代以内直系亲属肺癌家族史(1有 2无)", "肿瘤类型及关系(如有)",
-    "一年内胸部CT检查(1是 2否)",
-    "慢性支气管炎(1是 2否)", "患病年数", "肺气肿(1是 2否)", "患病年数",
-    "肺结核(1是 2否)", "患病年数", "慢性阻塞性肺病(1是 2否)", "患病年数",
-    "肺间质纤维化(1是 2否)", "患病年数",
-    "近半年不明原因消瘦(1有 2无)", "体重下降kg(如有)",
-    "最近是否有持续性干咳、痰中带血、声音嘶哑、反复同部位肺炎(1有 2无)", "具体症状(如有)",
-    "最近自我感觉(1好 2一般 3不好)"
+    {"id": "name", "text": "姓名"},
+    {"id": "gender", "text": "性别(1男 2女)"},
+    {"id": "birth_year", "text": "出生年份"},
+    {"id": "id_card", "text": "身份证号"},
+    {"id": "insurance_card", "text": "医保卡号(选填)"},
+    {"id": "family_doctor", "text": "家庭医生"},
+    {"id": "investigator", "text": "问卷调查人(楼栋负责人)"},
+    {"id": "height", "text": "身高(cm)"},
+    {"id": "weight", "text": "体重(kg)"},
+    {"id": "occupation", "text": "职业"},
+    {"id": "education", "text": "文化程度(1小学 2初中 3中专 4高中 5大专 6大学 7硕士 8博士 9博士后)"},
+    {"id": "address", "text": "家庭地址"},
+    {"id": "phone1", "text": "联系电话1(住宅)"},
+    {"id": "phone2", "text": "联系电话2(手机)"},
+    {"id": "phone3", "text": "联系电话3(家属)"},
+
+    # 吸烟相关
+    {"id": "smoking", "text": "吸烟史(1是 2否)"},
+    {"id": "smoking_freq", "text": "吸烟频率(支/天)", "condition": lambda a: a.get("smoking") == "1"},
+    {"id": "smoking_years", "text": "累计吸烟年数", "condition": lambda a: a.get("smoking") == "1"},
+    {"id": "quit_smoking", "text": "目前是否戒烟(1是 2否)", "condition": lambda a: a.get("smoking") == "1"},
+    {"id": "quit_years", "text": "戒烟年数",
+     "condition": lambda a: a.get("smoking") == "1" and a.get("quit_smoking") == "1"},
+
+    # 被动吸烟
+    {"id": "passive_smoking", "text": "被动吸烟(1否 2是)"},
+    {"id": "passive_freq", "text": "被动吸烟频率(1≤1小时/天 2 1-2小时/天 3>2小时/天)",
+     "condition": lambda a: a.get("passive_smoking") == "2"},
+    {"id": "passive_years", "text": "累计被动吸烟年数", "condition": lambda a: a.get("passive_smoking") == "2"},
+
+    # 厨房油烟接触
+    {"id": "kitchen_smoke", "text": "长期厨房油烟接触(1每周<1次 2每周1-3次 3每周>3次 4每天)"},
+    {"id": "kitchen_years", "text": "累计厨房油烟接触年数", "condition": lambda a: a.get("kitchen_smoke") != "1"},
+
+    # 职业致癌物
+    {"id": "occup_carcinogen", "text": "职业致癌物质接触(1有 2无)"},
+    {"id": "carcinogen_detail", "text": "致癌物类型及累计接触年数(如有)",
+     "condition": lambda a: a.get("occup_carcinogen") == "1"},
+
+    # 既往个人肿瘤史
+    {"id": "personal_tumor", "text": "既往个人肿瘤史(1有 2无)"},
+    {"id": "tumor_detail", "text": "肿瘤类型及确诊年份(如有)", "condition": lambda a: a.get("personal_tumor") == "1"},
+
+    # 家族肺癌史
+    {"id": "family_lung_cancer", "text": "三代以内直系亲属肺癌家族史(1有 2无)"},
+    {"id": "family_lung_detail", "text": "肿瘤类型及关系(如有)",
+     "condition": lambda a: a.get("family_lung_cancer") == "1"},
+
+    # 近一年胸部CT检查
+    {"id": "ct_check", "text": "一年内胸部CT检查(1是 2否)"},
+
+    # 慢性疾病
+    {"id": "chronic_bronchitis", "text": "慢性支气管炎(1是 2否)"},
+    {"id": "bronchitis_years", "text": "患病年数", "condition": lambda a: a.get("chronic_bronchitis") == "1"},
+
+    {"id": "emphysema", "text": "肺气肿(1是 2否)"},
+    {"id": "emphysema_years", "text": "患病年数", "condition": lambda a: a.get("emphysema") == "1"},
+
+    {"id": "tuberculosis", "text": "肺结核(1是 2否)"},
+    {"id": "tuberculosis_years", "text": "患病年数", "condition": lambda a: a.get("tuberculosis") == "1"},
+
+    {"id": "copd", "text": "慢性阻塞性肺病(1是 2否)"},
+    {"id": "copd_years", "text": "患病年数", "condition": lambda a: a.get("copd") == "1"},
+
+    {"id": "interstitial_fibrosis", "text": "肺间质纤维化(1是 2否)"},
+    {"id": "fibrosis_years", "text": "患病年数", "condition": lambda a: a.get("interstitial_fibrosis") == "1"},
+
+    # 最近半年症状
+    {"id": "recent_weight_loss", "text": "近半年不明原因消瘦(1有 2无)"},
+    {"id": "weight_loss", "text": "体重下降kg(如有)", "condition": lambda a: a.get("recent_weight_loss") == "1"},
+
+    {"id": "recent_symptoms", "text": "最近是否有持续性干咳、痰中带血、声音嘶哑、反复同部位肺炎(1有 2无)"},
+    {"id": "symptom_detail", "text": "具体症状(如有)", "condition": lambda a: a.get("recent_symptoms") == "1"},
+
+    {"id": "self_feeling", "text": "最近自我感觉(1好 2一般 3不好)"}
 ]
+
 questionnaire_reference = {
     "基本信息": {
         "姓名": "2~4个汉字",
@@ -93,3 +152,4 @@ questionnaire_reference = {
         "最近自我感觉(1好 2一般 3不好)": "1~3"
     }
 }
+
